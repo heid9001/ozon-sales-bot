@@ -18,7 +18,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
                 where: {
                     [Op.and]: {
                         status: STATE_QUEUE,
-                        at: {
+                        atCart: {
                             [Op.lte]: moment().toDate()
                         }
                     }
