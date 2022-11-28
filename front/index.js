@@ -67,6 +67,16 @@ $(document).ready(function(){
     });
 });
 
+function beforeNow(ts)
+{
+    let dt = moment(ts).diff(moment());
+    return dt < 0 ? false : {
+        h: Math.floor(dt / 1000 / 60 / 60 % 24),
+        m: Math.floor(dt / 1000 / 60 % 60 ),
+        s: Math.floor(dt / 1000 % 60),
+    };
+}
+
 function render()
 {
     let template = '';
@@ -76,17 +86,17 @@ function render()
         name = name.replaceAll(/[0-9]/g, " ");
         name = translit(name);
         let stateWidget = '';
-        let beforeStart = moment(sale.at).diff(moment());
-        console.log(moment().format(), sale.at, moment(sale.at).format(), beforeStart / 1000 / 60);
-        if (beforeStart < 0) {
+        let beforeStart = beforeNow(sale.at);
+        if (! beforeStart) {
             beforeStart = "скоро будет запущен";
         } else {
-            let temp = {
-                h: Math.floor(beforeStart / 1000 / 60 / 60 % 24),
-                m: Math.floor(beforeStart / 1000 / 60 % 60 ),
-                s: Math.floor(beforeStart / 1000 % 60),
-            }
-            beforeStart = "через "+ `${temp.h} часов ${temp.m} минут ${temp.s} секунд`;
+            beforeStart = "через "+ `${beforeStart.h} часов ${beforeStart.m} минут ${beforeStart.s} секунд`;
+        }
+        let beforeStart2 = beforeNow(sale.atCart);
+        if (! beforeStart2) {
+            beforeStart2 = "скоро будет запущен";
+        } else {
+            beforeStart2 = "через "+ `${beforeStart2.h} часов ${beforeStart2.m} минут ${beforeStart2.s} секунд`;
         }
         switch (sale.status) {
             case 0:{
@@ -122,7 +132,7 @@ function render()
                     <li><a href="${sale.current}">процесс</a></li>
                 </ul>
                 <div>до оформления заказа ${moment(sale.at).format(DATE_FORMAT)} (${beforeStart})</div>
-                <div>до добавления в корзину ${moment(sale.atCart).format(DATE_FORMAT)} (${beforeStart})</div>
+                <div>до добавления в корзину ${moment(sale.atCart).format(DATE_FORMAT)} (${beforeStart2})</div>
             </div>
         </div>
         `

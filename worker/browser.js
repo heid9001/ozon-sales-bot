@@ -7,7 +7,7 @@ const {
     STATE_ERROR,
 } = require('./models');
 const LOGGING = true;
-const ENV     = 'dev';
+const ENV     = 'prod';
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -30,7 +30,7 @@ async function setupPage(browser)
 {
     const page = await browser.newPage()
     await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36");
-    await page.setViewport({ width: 1200, height: 631 })
+    await page.setViewport({ width: 1200, height: 1030 })
     await loadCookies(page);
     return page;
 }
@@ -98,38 +98,43 @@ async function process(saleTask)
             break;
         }
     }
+    await sleep(1000);
     // добавили товар в корзину, теперь идем в корзину
     await page.goto("https://www.ozon.ru/cart")
-
-    // ожидаем даты начала распродажи (по тесту за 6 минут от начала)
+    await sleep(1000);
+    //     // ожидаем даты начала распродажи (по тесту за 6 минут от начала)
     while (AT_SALE.diff(moment()) > 0) {
         if (LOGGING) {
             console.log("AT_ORDER", (AT_SALE.diff(moment()) / 1000));
         }
         await sleep(100);
     }
-    if (LOGGING) {
-        console.log("Оформляем заказ", moment().format());
-    }
+    console.log("В корзине")
+    // await sleep(1000);
     await page.waitForFunction(
-        'document.querySelector("body").innerText.includes("Перейти к оформлению")'
+        'document.evaluate("//button[contains(., \'Перейти к оформлению\')]", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue !== null'
     );
-    const [orderBtn] = await page.$x("//button[contains(., 'Перейти к оформлению')]");
-    if (orderBtn) {
-        if (ENV === "prod") {
-            await orderBtn.click();
-        }
-        if (LOGGING) {
-            console.log("Заказ оформлен", moment().format())
-        }
-    }
-    await sleep(5000);
+    await page.evaluate(() => {
+        document.evaluate("//button[contains(., 'Перейти к оформлению')]",
+            document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue.click();
+    });
+    await sleep(1000);
+
+    await page.waitForFunction(
+        'document.evaluate("//button[contains(., \'Оплатить онлайн\')]", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue !== null'
+    );
+    await page.evaluate(() => {
+        document.evaluate("//button[contains(., 'Оплатить онлайн')]", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click();
+    });
+    console.log("заказ оплачен")
     saleTask.status = STATE_DONE;
     try {
         await saleTask.save();
     } catch (err) {
         console.error(err.message);
     }
+    await sleep(10000);
     await browser.close();
     return saleTask.id;
 }
