@@ -3,3 +3,4 @@ package-lock.json
 node_modules/*
 front/build
 *.png
+.idea

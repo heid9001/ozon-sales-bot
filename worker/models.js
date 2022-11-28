@@ -40,10 +40,12 @@ const Sale = db.define('Sale', {
     at: {
         type: 'TIMESTAMP',
         allowNull: false,
+        defaultValue: db.literal('CURRENT_TIMESTAMP')
     },
     atCart: {
         type: 'TIMESTAMP',
         allowNull: false,
+        defaultValue: db.literal('CURRENT_TIMESTAMP')
     }
 }, {
     sequelize: db,

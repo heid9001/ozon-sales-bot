@@ -4,11 +4,12 @@
   "description": "",
   "main": "api/index.js",
   "scripts": {
+    "migrate":  "node migrate.js",
     "api":      "node api/index.js",
     "front":    "wp --mode production",
     "login":    "node ./warmup.js",
     "handler":  "node ./worker/scheduler.js",
-    "web":      "npm run front && npm run api"
+    "web":      "npm run migrate && npm run front && npm run api"
   },
   "author": "",
   "license": "ISC",
