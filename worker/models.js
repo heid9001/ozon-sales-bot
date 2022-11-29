@@ -1,9 +1,6 @@
-const {Sequelize} = require('sequelize');
-const {DataTypes} = require('sequelize');
-const moment      = require('moment');
+const {Sequelize, DataTypes} = require('sequelize');
 const STATE_QUEUE       = 0; exports.STATE_QUEUE    = STATE_QUEUE;
 const STATE_PROGRESS    = 1; exports.STATE_PROGRESS = STATE_PROGRESS;
-const STATE_WAITORDER   = 2; exports.STATE_PROGRESS = STATE_PROGRESS;
 const STATE_DONE        = 3; exports.STATE_DONE     = STATE_DONE;
 const STATE_ERROR       = 4; exports.STATE_ERROR    = STATE_ERROR;
 

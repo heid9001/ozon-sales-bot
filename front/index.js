@@ -19,8 +19,8 @@ import translit from 'latin-to-cyrillic';
 
 import moment from 'moment';
 const DATE_FORMAT    = 'DD.MM HH:mm';
-const HOST           = 'http://localhost';
-const PORT           = '3000';
+const HOST           = 'http://nickot.ddns.net';
+const PORT           = '80';
 const ENTRY_URL      = `${HOST}:${PORT}/entry`;
 const ENTRY_LIST_URL = `${ENTRY_URL}/list`;
 
@@ -129,7 +129,7 @@ function render()
             <div class="panel-body">
                 <ul>
                     <li><a href="${sale.entry}">ссылка на товар</a></li>
-                    <li><a href="${sale.current}">процесс</a></li>
+                    <li>${sale.current}</li>
                 </ul>
                 <div>до оформления заказа ${moment(sale.at).format(DATE_FORMAT)} (${beforeStart})</div>
                 <div>до добавления в корзину ${moment(sale.atCart).format(DATE_FORMAT)} (${beforeStart2})</div>
