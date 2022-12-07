@@ -24,3 +24,5 @@ SaleTask {
     at       - время оформления заказа
     atCart   - время добавления в корзину
 }
+
+![image](https://user-images.githubusercontent.com/53014499/206260653-ad48be05-b191-49b5-94a4-3f87b1db1f15.png)
